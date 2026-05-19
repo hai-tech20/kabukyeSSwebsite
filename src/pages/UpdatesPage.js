@@ -4,12 +4,57 @@ import Navigation from '../components/Navigation';
 import Footer from '../components/Footer';
 import { supabase } from '../supabase';
 
+const useBackgroundSlideshow = () => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  
+  const allImages = [
+    'ddm1.jpeg',
+    'ddm2.jpeg',
+    'one.jpeg',
+    'two.jpeg',
+    'three.jpeg',
+    'four.jpeg',
+    'five.jpeg',
+    'six.jpeg',
+    'seven.jpeg',
+    'eight.jpeg',
+    'nine.jpeg',
+    'ten.jpeg',
+    'eleven.jpeg',
+    'twelve.jpeg',
+    'thirteen.jpeg',
+    'fourteen.jpeg',
+    'fifteen.jpeg',
+    'sixteen.jpeg',
+    'seventeen.jpeg',
+    'eighteen.jpeg',
+    'ninteen.jpeg',
+    'twenty.jpeg',
+    'media1.jpeg',
+    'media2.jpeg',
+    'media3.jpeg',
+    'media6.jpeg',
+    'media7.jpeg',
+    'media8.jpeg'
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % allImages.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return `/assets/${allImages[currentIndex]}`;
+};
+
 const UpdatesPage = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [hoveredPost, setHoveredPost] = useState(null);
   const [selectedPost, setSelectedPost] = useState(null);
   const videoRefs = useRef({});
+  const backgroundImage = useBackgroundSlideshow();
 
   useEffect(() => {
     fetchPosts();
@@ -134,7 +179,34 @@ const UpdatesPage = () => {
     }
   };
 
+  const getYouTubeEmbedUrl = (url) => {
+    if (!url) return null;
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const match = url.match(regExp);
+    if (match && match[2].length === 11) {
+      return `https://www.youtube.com/embed/${match[2]}`;
+    }
+    return null;
+  };
+
   const renderMedia = (post) => {
+    const youtubeUrl = getYouTubeEmbedUrl(post.media_url);
+
+    if (youtubeUrl) {
+      return (
+        <div className="relative group aspect-video">
+          <iframe
+            src={youtubeUrl}
+            className="w-full h-80 rounded-t-2xl bg-gray-100"
+            title={post.title}
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          ></iframe>
+        </div>
+      );
+    }
+
     if (post.media_type === 'image') {
       return (
         <div className="relative group">
@@ -207,8 +279,8 @@ const UpdatesPage = () => {
 
       {/* Hero Section - Bigger like About Page */}
       <section 
-        className="relative h-96 bg-cover bg-center bg-no-repeat flex items-center justify-center"
-        style={{ backgroundImage: "url('/assets/media3.jpeg')" }}
+        className="relative h-96 bg-cover bg-center bg-no-repeat flex items-center justify-center transition-all duration-1000"
+        style={{ backgroundImage: `url('${backgroundImage}')` }}
       >
         <div className="absolute inset-0 bg-school-green bg-opacity-70"></div>
         <div className="relative z-10 text-center text-white px-4">
@@ -315,47 +387,77 @@ const UpdatesPage = () => {
               </button>
 
               {/* Media Content - Centered */}
-              {selectedPost.media_type === 'image' ? (
-                <div className="flex flex-col items-center">
-                  <img
-                    src={selectedPost.media_url}
-                    alt={selectedPost.title}
-                    className="max-w-full max-h-[70vh] object-contain rounded-lg mb-4"
-                  />
-                  <div className="text-center text-white max-w-2xl">
-                    <h3 className="text-xl font-bold font-serif mb-2">{selectedPost.title}</h3>
-                    <p className="text-sm opacity-90">{selectedPost.description}</p>
-                  </div>
-                </div>
-              ) : selectedPost.media_type === 'video' ? (
-                <div className="flex flex-col items-center">
-                  <video
-                    controls
-                    className="max-w-full max-h-[70vh] object-contain rounded-lg mb-4"
-                  >
-                    <source src={selectedPost.media_url} type="video/mp4" />
-                    Your browser does not support the video tag.
-                  </video>
-                  <div className="text-center text-white max-w-2xl">
-                    <h3 className="text-xl font-bold font-serif mb-2">{selectedPost.title}</h3>
-                    <p className="text-sm opacity-90">{selectedPost.description}</p>
-                  </div>
-                </div>
-              ) : (
-                <div className={`w-full h-full max-w-[90vw] max-h-[90vh] flex items-center justify-center rounded-lg ${
-                  selectedPost.media_type === 'article' 
-                    ? 'bg-gradient-to-br from-green-400 to-green-600' 
-                    : 'bg-gradient-to-br from-yellow-400 to-orange-500'
-                }`}>
-                  <div className="text-white text-center p-8">
-                    <div className="text-4xl mb-3">
-                      {selectedPost.media_type === 'article' ? '📄' : '📢'}
+              {(() => {
+                const youtubeUrl = getYouTubeEmbedUrl(selectedPost.media_url);
+                if (youtubeUrl) {
+                  return (
+                    <div className="flex flex-col items-center w-full">
+                      <div className="w-full aspect-video max-h-[70vh] mb-4">
+                        <iframe
+                          src={youtubeUrl}
+                          className="w-full h-full rounded-lg shadow-2xl"
+                          title={selectedPost.title}
+                          frameBorder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        ></iframe>
+                      </div>
+                      <div className="text-center text-white max-w-2xl">
+                        <h3 className="text-xl font-bold font-serif mb-2">{selectedPost.title}</h3>
+                        <p className="text-sm opacity-90">{selectedPost.description}</p>
+                      </div>
                     </div>
-                    <h3 className="text-xl font-bold font-serif mb-2">{selectedPost.title}</h3>
-                    <p className="text-sm opacity-90">{selectedPost.description}</p>
-                  </div>
-                </div>
-              )}
+                  );
+                }
+
+                if (selectedPost.media_type === 'image') {
+                  return (
+                    <div className="flex flex-col items-center">
+                      <img
+                        src={selectedPost.media_url}
+                        alt={selectedPost.title}
+                        className="max-w-full max-h-[70vh] object-contain rounded-lg mb-4"
+                      />
+                      <div className="text-center text-white max-w-2xl">
+                        <h3 className="text-xl font-bold font-serif mb-2">{selectedPost.title}</h3>
+                        <p className="text-sm opacity-90">{selectedPost.description}</p>
+                      </div>
+                    </div>
+                  );
+                } else if (selectedPost.media_type === 'video') {
+                  return (
+                    <div className="flex flex-col items-center">
+                      <video
+                        controls
+                        className="max-w-full max-h-[70vh] object-contain rounded-lg mb-4"
+                      >
+                        <source src={selectedPost.media_url} type="video/mp4" />
+                        Your browser does not support the video tag.
+                      </video>
+                      <div className="text-center text-white max-w-2xl">
+                        <h3 className="text-xl font-bold font-serif mb-2">{selectedPost.title}</h3>
+                        <p className="text-sm opacity-90">{selectedPost.description}</p>
+                      </div>
+                    </div>
+                  );
+                } else {
+                  return (
+                    <div className={`w-full h-full max-w-[90vw] max-h-[90vh] flex items-center justify-center rounded-lg ${
+                      selectedPost.media_type === 'article' 
+                        ? 'bg-gradient-to-br from-green-400 to-green-600' 
+                        : 'bg-gradient-to-br from-yellow-400 to-orange-500'
+                    }`}>
+                      <div className="text-white text-center p-8">
+                        <div className="text-4xl mb-3">
+                          {selectedPost.media_type === 'article' ? '📄' : '📢'}
+                        </div>
+                        <h3 className="text-xl font-bold font-serif mb-2">{selectedPost.title}</h3>
+                        <p className="text-sm opacity-90">{selectedPost.description}</p>
+                      </div>
+                    </div>
+                  );
+                }
+              })()}
             </motion.div>
           </motion.div>
         )}

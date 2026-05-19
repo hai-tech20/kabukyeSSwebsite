@@ -23,6 +23,7 @@ const Navigation = () => {
     { path: '/', label: 'Home' },
     { path: '/about', label: 'About' },
     { path: '/updates', label: 'Updates' },
+    { path: '/reports', label: 'Reports' },
     { path: '/contact', label: 'Contact' }
   ];
 

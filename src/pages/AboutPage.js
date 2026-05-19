@@ -3,15 +3,61 @@ import { motion } from 'framer-motion';
 import Navigation from '../components/Navigation';
 import Footer from '../components/Footer';
 
+const useBackgroundSlideshow = () => {
+  const [currentIndex, setCurrentIndex] = React.useState(0);
+  
+  const allImages = [
+    'ddm1.jpeg',
+    'ddm2.jpeg',
+    'one.jpeg',
+    'two.jpeg',
+    'three.jpeg',
+    'four.jpeg',
+    'five.jpeg',
+    'six.jpeg',
+    'seven.jpeg',
+    'eight.jpeg',
+    'nine.jpeg',
+    'ten.jpeg',
+    'eleven.jpeg',
+    'twelve.jpeg',
+    'thirteen.jpeg',
+    'fourteen.jpeg',
+    'fifteen.jpeg',
+    'sixteen.jpeg',
+    'seventeen.jpeg',
+    'eighteen.jpeg',
+    'ninteen.jpeg',
+    'twenty.jpeg',
+    'media1.jpeg',
+    'media2.jpeg',
+    'media3.jpeg',
+    'media6.jpeg',
+    'media7.jpeg',
+    'media8.jpeg'
+  ];
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % allImages.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return `/assets/${allImages[currentIndex]}`;
+};
+
 const AboutPage = () => {
+  const backgroundImage = useBackgroundSlideshow();
+  
   return (
     <div className="min-h-screen">
       <Navigation />
 
       {/* Hero Section */}
       <section 
-        className="relative h-96 bg-cover bg-center bg-no-repeat flex items-center justify-center"
-        style={{ backgroundImage: "url('/assets/ddm1.jpeg')" }}
+        className="relative h-96 bg-cover bg-center bg-no-repeat flex items-center justify-center transition-all duration-1000"
+        style={{ backgroundImage: `url('${backgroundImage}')` }}
       >
         <div className="absolute inset-0 bg-school-green bg-opacity-70"></div>
         <div className="relative z-10 text-center text-white px-4">

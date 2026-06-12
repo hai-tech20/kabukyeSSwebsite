@@ -8,8 +8,10 @@ const ReportsPage = () => {
 
   const handleRoleSelect = (role) => {
     setSelectedRole(role);
-    // Redirect to role-specific SMS login page with entry token
-    window.location.href = `http://localhost:3001/login/${role}?entry=website`;
+    const baseUrl = window.location.origin === 'http://localhost:3000' || window.location.origin === 'http://localhost:3001'
+      ? 'http://localhost:3001'
+      : 'https://sms.kabukyesecondaryschool.com';
+    window.location.href = `${baseUrl}/login/${role}?entry=website`;
   };
 
   return (

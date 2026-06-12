@@ -5,7 +5,6 @@ import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
 import UpdatesPage from './pages/UpdatesPage';
 import ContactPage from './pages/ContactPage';
-import AdminDashboard from './pages/AdminDashboard';
 import ReportsPage from './pages/ReportsPage';
 import './App.css';
 
@@ -23,7 +22,6 @@ const App = () => {
             <Route path="/about" element={<AboutPage />} />
             <Route path="/updates" element={<UpdatesPage />} />
             <Route path="/contact" element={<ContactPage />} />
-            <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/reports" element={<ReportsPage />} />
           </Routes>
         </motion.div>

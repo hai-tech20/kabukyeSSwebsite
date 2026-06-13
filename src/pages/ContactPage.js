@@ -273,15 +273,23 @@ const ContactPage = () => {
 
       console.log('Final application data:', applicationData);
 
-      const { data, error } = await supabase
-        .from('applications')
-        .insert([applicationData]);
+      const smsUrl = window.location.origin === 'http://localhost:3000' || window.location.origin === 'http://localhost:3001'
+        ? 'http://localhost:3001'
+        : 'https://sms.kabukyesecondaryschool.com';
 
-      if (error) {
-        console.error('Error submitting application:', error);
-        alert('Error submitting application: ' + error.message);
+      const res = await fetch(`${smsUrl}/api/applications`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(applicationData),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        console.error('Error submitting application:', data);
+        alert('Error submitting application: ' + (data.error || data.details || 'Unknown error'));
       } else {
-        console.log('Application submitted successfully to Supabase:', data);
+        console.log('Application submitted successfully:', data);
         alert('Application submitted successfully!');
         setIsModalOpen(false);
         setFormData({

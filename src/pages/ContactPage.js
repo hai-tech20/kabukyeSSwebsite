@@ -511,7 +511,7 @@ const ContactPage = () => {
             className="rounded-2xl overflow-hidden shadow-xl"
           >
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.8977477487!2d33.123456!3d0.876543!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMMCsMDQ2JzE2LjAiTiAzM8KwMDcnMjYuNCJF!5e0!3m2!1sen!2sug!4v1234567890"
+              src="https://maps.google.com/maps?q=Kabukye+Secondary+School+Buwaiswa+Kamuli+Uganda&output=embed"
               width="100%"
               height="400"
               style={{ border: 0 }}

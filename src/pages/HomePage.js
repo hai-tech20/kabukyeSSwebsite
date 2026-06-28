@@ -154,6 +154,13 @@ const HomePage = () => {
             >
               Get In Touch
             </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              onClick={() => navigate('/contact')}
+              className="bg-school-green border-2 border-school-yellow text-white font-semibold py-3 px-8 rounded-full hover:bg-opacity-90 transition-all"
+            >
+              Apply Here
+            </motion.button>
           </motion.div>
         </div>
       </section>
